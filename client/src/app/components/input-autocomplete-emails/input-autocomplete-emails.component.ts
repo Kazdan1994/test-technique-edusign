@@ -1,5 +1,9 @@
-import {Component} from '@angular/core';
-import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
+import { Component } from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-input-autocomplete-emails',
@@ -16,11 +20,15 @@ import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/for
 export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
   public formControl: FormControl;
 
-  private onChange: (value: any) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: Event) => void = () => {
+    /**/
+  };
+  private onTouched: () => void = () => {
+    /**/
+  };
 
   constructor() {
-    this.formControl = new FormControl('')
+    this.formControl = new FormControl('');
   }
 
   writeValue(value: () => void): void {
@@ -35,7 +43,7 @@ export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  onInput(value: InputEvent): void {
+  onInput(value: Event): void {
     this.onChange(value);
   }
 }

@@ -8,7 +8,7 @@ describe('InputAutocompleteEmailsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InputAutocompleteEmailsComponent]
+      declarations: [InputAutocompleteEmailsComponent],
     });
     fixture = TestBed.createComponent(InputAutocompleteEmailsComponent);
     component = fixture.componentInstance;

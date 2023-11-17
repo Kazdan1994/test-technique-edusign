@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core';
-import {FileUploadComponent} from "./file-upload.component";
-import {NzUploadModule} from "ng-zorro-antd/upload";
-import {NzIconModule} from "ng-zorro-antd/icon";
+import { FileUploadComponent } from './file-upload.component';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
-  imports: [
-    NzUploadModule,
-    NzIconModule
-  ],
+  imports: [NzUploadModule, NzIconModule],
   declarations: [FileUploadComponent],
-  exports: [FileUploadComponent]
+  exports: [FileUploadComponent],
 })
-export class FileUploadModule { }
+export class FileUploadModule {}

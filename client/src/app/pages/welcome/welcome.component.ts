@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
-import {NzUploadFile} from "ng-zorro-antd/upload";
+import { Component, type OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
+import { type NzUploadFile } from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css']
+  styleUrls: ['./welcome.component.css'],
 })
 export class WelcomeComponent implements OnInit {
   listOfOption: string[] = [];
@@ -17,7 +22,7 @@ export class WelcomeComponent implements OnInit {
     emailsIntervenants: FormControl<string>;
   }>;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(private readonly fb: NonNullableFormBuilder) {
     const { required, email } = Validators;
     this.validateForm = this.fb.group({
       file: ['', [required]],
@@ -35,11 +40,11 @@ export class WelcomeComponent implements OnInit {
     return false;
   };
 
-  submitForm() {
+  submitForm(): void {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
     } else {
-      Object.values(this.validateForm.controls).forEach(control => {
+      Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });

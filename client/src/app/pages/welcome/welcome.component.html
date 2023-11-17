@@ -4,7 +4,13 @@
   </li>
 </ul>
 
-<form nz-form [nzLayout]="'vertical'" [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+<form
+  nz-form
+  [nzLayout]="'vertical'"
+  [formGroup]="validateForm"
+  class="login-form"
+  (ngSubmit)="submitForm()"
+>
   <nz-form-item>
     <nz-form-control [nzSpan]="14" nzErrorTip="Merci d'uploader un fichier'">
       <app-file-upload></app-file-upload>
@@ -12,19 +18,29 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-label [nzSpan]="6" nzFor="email">Email étudiant</nz-form-label>
-    <nz-form-control [nzSpan]="14" nzErrorTip="Merci de remplir l'email de l'étudiant!">
-      <input
-        type="email"
-        nz-input
-        formControlName="emailEtudiant"
-      />
+    <nz-form-control
+      [nzSpan]="14"
+      nzErrorTip="Merci de remplir l'email de l'étudiant!"
+    >
+      <input type="email" nz-input formControlName="emailEtudiant" />
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label [nzSpan]="6" nzFor="email">Emails intervenants</nz-form-label>
-    <nz-form-control [nzSpan]="14" nzErrorTip="Merci de remplir les emails des intervenants">
+    <nz-form-label [nzSpan]="6" nzFor="email"
+      >Emails intervenants</nz-form-label
+    >
+    <nz-form-control
+      [nzSpan]="14"
+      nzErrorTip="Merci de remplir les emails des intervenants"
+    >
       <app-input-autocomplete-emails formControlName="emailsIntervenants" />
     </nz-form-control>
   </nz-form-item>
-  <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Send</button>
+  <button
+    nz-button
+    class="login-form-button login-form-margin"
+    [nzType]="'primary'"
+  >
+    Send
+  </button>
 </form>

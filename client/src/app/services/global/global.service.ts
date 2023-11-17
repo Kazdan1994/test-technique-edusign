@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { type HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GlobalService {
+  constructor(private readonly _http: HttpClient) {}
 
-  constructor(private _http: HttpClient) { }
-
-  loadHomeText() {
-    return new Promise<string>((resolve, reject) => {
-
+  async loadHomeText(): Promise<string> {
+    return await new Promise<string>((resolve, reject) => {
       const headers = new HttpHeaders({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       });
 
-      this._http.get(`http://localhost:8080`, { headers: headers })
-        .subscribe((data: any) => {
-          resolve(data.homeText);
-        }, error => {
-          console.log(error);
-          reject(error);
-        });
+      this._http
+        .get<{ homeText: string }>('http://localhost:8080', { headers })
+        .subscribe(
+          (data) => {
+            resolve(data.homeText);
+          },
+          (error) => {
+            console.log(error);
+            reject(error);
+          },
+        );
     });
   }
-
-
 }

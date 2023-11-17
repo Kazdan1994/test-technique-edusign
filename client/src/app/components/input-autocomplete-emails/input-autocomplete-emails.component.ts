@@ -20,7 +20,7 @@ import {
 export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
   public formControl: FormControl;
 
-  private onChange: (value: Event) => void = () => {
+  private onChange: (value: string) => void = () => {
     /**/
   };
   private onTouched: () => void = () => {
@@ -43,7 +43,7 @@ export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  onInput(value: Event): void {
-    this.onChange(value);
+  onInput(event: Event): void {
+    this.onChange((event.target as HTMLInputElement).value);
   }
 }

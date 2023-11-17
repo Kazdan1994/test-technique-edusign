@@ -35,11 +35,6 @@ export class WelcomeComponent implements OnInit {
     this.listOfOption = [];
   }
 
-  beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = this.fileList.concat(file);
-    return false;
-  };
-
   submitForm(): void {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);

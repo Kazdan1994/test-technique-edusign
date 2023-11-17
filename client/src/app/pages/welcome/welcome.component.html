@@ -1,0 +1,32 @@
+<form nz-form [nzLayout]="'vertical'" class="login-form" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-control [nzSpan]="14" nzErrorTip="Merci d'uploader un fichier'">
+      <nz-upload
+        nzType="drag"
+        [(nzFileList)]="fileList"
+        [nzBeforeUpload]="beforeUpload"
+      >
+        <p class="ant-upload-drag-icon">
+          <span nz-icon nzType="inbox"></span>
+        </p>
+        <p class="ant-upload-text">Click or drag file to this area to upload</p>
+        <p class="ant-upload-hint">
+          (1 file & 10 Mo maximum)
+        </p>
+      </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzFor="email">Email étudiant</nz-form-label>
+    <nz-form-control [nzSpan]="14" nzErrorTip="Merci de remplir l'email de l'étudiant!">
+      <input type="email" nz-input formControlName="emailEtudiant" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzFor="email">Emails intervenants</nz-form-label>
+    <nz-form-control [nzSpan]="14" nzErrorTip="Merci de remplir les emails des intervenants">
+      <textarea rows="4" nz-input formControlName="emailsIntervenants"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Send</button>
+</form>

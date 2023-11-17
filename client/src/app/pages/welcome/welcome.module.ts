@@ -10,6 +10,13 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzUploadModule} from "ng-zorro-antd/upload";
 import {NzIconModule} from "ng-zorro-antd/icon";
+import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
+import {FileUploadModule} from "../../components/file-upload/file-upload.module";
+import {KeyValuePipe, NgForOf} from "@angular/common";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {
+  InputAutocompleteEmailsModule
+} from "../../components/input-autocomplete-emails/input-autocomplete-emails.module";
 
 @NgModule({
   imports: [
@@ -21,7 +28,13 @@ import {NzIconModule} from "ng-zorro-antd/icon";
     NzButtonModule,
     ReactiveFormsModule,
     NzUploadModule,
-    NzIconModule
+    NzIconModule,
+    NzAutocompleteModule,
+    FileUploadModule,
+    NgForOf,
+    KeyValuePipe,
+    NzSelectModule,
+    InputAutocompleteEmailsModule
   ],
   declarations: [WelcomeComponent],
   exports: [WelcomeComponent]

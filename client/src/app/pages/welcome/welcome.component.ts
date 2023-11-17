@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
 import {NzUploadFile} from "ng-zorro-antd/upload";
 
 @Component({
@@ -7,13 +8,26 @@ import {NzUploadFile} from "ng-zorro-antd/upload";
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
-
-  uploading = false;
+  listOfOption: string[] = [];
   fileList: NzUploadFile[] = [];
 
-  constructor() { }
+  validateForm: FormGroup<{
+    file: FormControl<string>;
+    emailEtudiant: FormControl<string>;
+    emailsIntervenants: FormControl<string>;
+  }>;
 
-  ngOnInit() {
+  constructor(private fb: NonNullableFormBuilder) {
+    const { required, email } = Validators;
+    this.validateForm = this.fb.group({
+      file: ['', [required]],
+      emailEtudiant: ['', [required, email]],
+      emailsIntervenants: ['', [required, email]],
+    });
+  }
+
+  ngOnInit(): void {
+    this.listOfOption = [];
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -22,6 +36,15 @@ export class WelcomeComponent implements OnInit {
   };
 
   submitForm() {
-    console.log('submit')
+    if (this.validateForm.valid) {
+      console.log('submit', this.validateForm.value);
+    } else {
+      Object.values(this.validateForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
   }
 }

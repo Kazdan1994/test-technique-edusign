@@ -1,0 +1,14 @@
+<nz-upload
+  nzType="drag"
+  [(nzFileList)]="fileList"
+  [nzBeforeUpload]="beforeUpload"
+  [nzSize]="10000"
+>
+  <p class="ant-upload-drag-icon">
+    <span nz-icon nzType="inbox"></span>
+  </p>
+  <p class="ant-upload-text">Drag & drop your file here</p>
+  <p class="ant-upload-hint">
+    (1 file & 10 Mo maximum)
+  </p>
+</nz-upload>

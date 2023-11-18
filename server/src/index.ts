@@ -1,4 +1,5 @@
-import express, { type Application } from "express";
+import express from "express";
+import type { Application, Request, Response } from "express";
 import cors, { type CorsOptions } from "cors";
 
 const app: Application = express();
@@ -15,7 +16,7 @@ const server = app
   .listen(PORT, "localhost", function () {
     console.log(`Server is running on port ${PORT}.`);
 
-    app.route("/").get((req: any, res) => {
+    app.route("/").get((req: Request, res: Response) => {
       res.json({ homeText: "My super home text" });
     });
   })

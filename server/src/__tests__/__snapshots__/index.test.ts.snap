@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app test get error if one intervenant email is wrong 1`] = `"ERR_UNKNOWN_EXTERNAL_BY_EMAIL"`;
+
+exports[`app test get error if student doesn't exist 1`] = `"An error occured"`;

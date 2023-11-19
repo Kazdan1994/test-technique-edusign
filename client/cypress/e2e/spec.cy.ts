@@ -1,9 +1,11 @@
 import 'cypress-file-upload';
 
 describe('My First Test', () => {
-  it('Visits the initial and submit the form', () => {
+  beforeEach(() => {
     cy.visit('/');
+  });
 
+  it('Visits the initial and submit the form', () => {
     cy.fixture('file.txt').then((fileContent) => {
       cy.get('[formControlName="file"]').attachFile(
         {
@@ -27,5 +29,17 @@ describe('My First Test', () => {
     );
 
     cy.get('button[type="submit"]').click({ force: true });
+
+    cy.get('.ant-notification-notice').should('exist');
+  });
+
+  it('should mark all form controls as touched when the form is invalid', () => {
+    cy.get('button[type="submit"]').click({ force: true });
+
+    cy.get('.ant-form-item-explain-error').each(($errorItem) => {
+      const errorMessage = $errorItem.text().trim();
+
+      expect(errorMessage).to.not.be.empty;
+    });
   });
 });

@@ -40,12 +40,10 @@ export class WelcomeComponent implements OnInit {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
-
       this.notification.create(
         'success',
         'Envoyé!',
-        JSON.stringify(this.validateForm.value),
+        'Vos informations ont été envoyées',
       );
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {

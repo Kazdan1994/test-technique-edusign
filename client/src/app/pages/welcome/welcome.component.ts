@@ -5,7 +5,8 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { type NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { emailListValidator } from '../../../validators/email-list.validator';
 
 @Component({
   selector: 'app-welcome',
@@ -14,7 +15,6 @@ import { type NzUploadFile } from 'ng-zorro-antd/upload';
 })
 export class WelcomeComponent implements OnInit {
   listOfOption: string[] = [];
-  fileList: NzUploadFile[] = [];
 
   validateForm: FormGroup<{
     file: FormControl<string>;
@@ -22,12 +22,15 @@ export class WelcomeComponent implements OnInit {
     emailsIntervenants: FormControl<string>;
   }>;
 
-  constructor(private readonly fb: NonNullableFormBuilder) {
+  constructor(
+    private readonly fb: NonNullableFormBuilder,
+    private notification: NzNotificationService,
+  ) {
     const { required, email } = Validators;
     this.validateForm = this.fb.group({
       file: ['', [required]],
       emailEtudiant: ['', [required, email]],
-      emailsIntervenants: ['', [required, email]],
+      emailsIntervenants: ['', [required, emailListValidator()]],
     });
   }
 
@@ -38,6 +41,12 @@ export class WelcomeComponent implements OnInit {
   submitForm(): void {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
+
+      this.notification.create(
+        'success',
+        'Envoyé!',
+        JSON.stringify(this.validateForm.value),
+      );
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {

@@ -1,6 +1,7 @@
-<textarea
-  nz-input
-  rows="4"
-  [formControl]="formControl"
-  (input)="onInput($event)"
-></textarea>
+<nz-select
+  nzMode="tags"
+  [(ngModel)]="emails"
+  (ngModelChange)="onChange(emails)"
+>
+  <nz-option *ngFor="let email of emails" [nzLabel]="email" [nzValue]="email"></nz-option>
+</nz-select>

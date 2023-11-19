@@ -4,6 +4,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { InputAutocompleteEmailsComponent } from './input-autocomplete-emails.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NgForOf } from '@angular/common';
 
 @NgModule({
   imports: [
@@ -12,6 +14,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     FormsModule,
     NzInputModule,
     ReactiveFormsModule,
+    NzSelectModule,
+    NgForOf,
   ],
   declarations: [InputAutocompleteEmailsComponent],
   exports: [InputAutocompleteEmailsComponent],

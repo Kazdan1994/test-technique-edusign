@@ -1,8 +1,14 @@
-import express from "express";
 import type { Application, Request, Response } from "express";
+import express from "express";
 import cors, { type CorsOptions } from "cors";
 import axios from "axios";
-import type { ApiResponse, Person, StudentData, ErrorResponse } from "../types";
+import type {
+  ApiResponse,
+  DocumentData,
+  ErrorResponse,
+  Person,
+  StudentData,
+} from "../types";
 import { Status } from "../types";
 import { ExternalData } from "../types/external";
 
@@ -56,11 +62,79 @@ async function getIntervenants(emails: string[]): Promise<Person[]> {
   return Promise.all(intervenantsPromises);
 }
 
-async function sendDocuments(): Promise<{ status: number; message: string }> {
-  // emails: string[],
+function generateSignatories(student: string, externals: string[]) {
+  const signatories = [
+    {
+      type: "student",
+      id: student,
+      elements: [
+        {
+          type: "",
+          position: {
+            page: 1,
+            x: 100,
+            y: 200,
+          },
+        },
+      ],
+    },
+  ];
+
+  return signatories.concat(
+    externals.map((external, i) => ({
+      type: "external",
+      id: external,
+      elements: [
+        {
+          type: "",
+          position: {
+            page: 2 + i,
+            x: 10 * (i + 1),
+            y: 10 * (i + 1),
+          },
+        },
+      ],
+    })),
+  );
+}
+
+async function sendDocuments(
+  student: string,
+  externals: string[],
+  base64: string,
+): Promise<ApiResponse<DocumentData>> {
+  const signatories = generateSignatories(student, externals);
+
+  const response = await axios.post<ApiResponse<StudentData>>(
+    "https://ext.edusign.fr/v1/document/v2/send-base64",
+    {
+      user_id: "***REMOVED***",
+      document: {
+        name: "consigne",
+        base64: base64,
+      },
+      signatories,
+      sendDocumentToRecipients: true,
+      emailReminder: {
+        subject: "",
+        message: "",
+        amount: 0,
+        interval: 0,
+      },
+      directoryId: "",
+    },
+  );
+
+  if (response.data.status === Status.Error) {
+    throw new Error((response.data as ErrorResponse).message);
+  }
+
   return {
-    status: 200,
-    message: "ok",
+    status: Status.Success,
+    result: {
+      documentsSuccess: 1,
+      documents: [base64],
+    },
   };
 }
 
@@ -69,6 +143,12 @@ const server = app
     console.log(`Server is running on port ${PORT}.`);
 
     app.route("/").get((req: Request, res: Response) => {
+      res.json({ homeText: "My super home text" });
+    });
+
+    app.route("/sendDocument").post((req: Request, res: Response) => {
+      console.log(req.body);
+
       res.json({ homeText: "My super home text" });
     });
   })
@@ -80,4 +160,10 @@ const server = app
     }
   });
 
-export { server, getStudent, getIntervenants, sendDocuments };
+export {
+  server,
+  getStudent,
+  getIntervenants,
+  sendDocuments,
+  generateSignatories,
+};

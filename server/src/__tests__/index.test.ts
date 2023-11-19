@@ -2,8 +2,20 @@ import request from "supertest";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { getIntervenants, getStudent, sendDocuments, server } from "..";
-import { ApiResponse, ErrorResponse, Status, StudentData } from "../../types";
+import {
+  generateSignatories,
+  getIntervenants,
+  getStudent,
+  sendDocuments,
+  server,
+} from "..";
+import {
+  ApiResponse,
+  ErrorResponse,
+  Status,
+  StudentData,
+  SuccessResponse,
+} from "../../types";
 import { ExternalData } from "../../types/external";
 
 const mock = new MockAdapter(axios);
@@ -14,15 +26,14 @@ const emailStudent = faker.internet.email({
   firstName: studentFirstName,
   provider: "edusign.fr",
 });
-const emailsIntervenants = [faker.internet.email()];
+const emailsExternals = [faker.internet.email()];
+const studentId = faker.string.sample(16);
+const externalId = faker.string.sample(16);
 
 describe("app test", () => {
-  afterAll(() => {
-    server.close();
-  });
-
   afterEach(() => {
     mock.reset();
+    server.close();
   });
 
   test("home route", async () => {
@@ -34,12 +45,11 @@ describe("app test", () => {
   });
 
   test("get student email", async () => {
-    const id = faker.string.sample(16);
     const dataResponse: ApiResponse<StudentData> = {
       status: Status.Success,
       result: {
-        ID: id,
-        id,
+        ID: studentId,
+        id: studentId,
         EMAIL: emailStudent,
         FIRSTNAME: studentFirstName,
         LASTNAME: studentLastName,
@@ -106,12 +116,12 @@ describe("app test", () => {
   });
 
   test("get intervenants emails", async () => {
-    const emailIntervenant = emailsIntervenants[0];
+    const emailIntervenant = emailsExternals[0];
 
     const dataResponse: ApiResponse<ExternalData> = {
       status: Status.Success,
       result: {
-        ID: faker.string.sample(16),
+        ID: externalId,
         SCHOOL_ID: faker.string.sample(16),
         FIRSTNAME: faker.person.firstName(),
         LASTNAME: faker.person.lastName(),
@@ -135,7 +145,7 @@ describe("app test", () => {
       })
       .reply(200, dataResponse);
 
-    const intervenants = await getIntervenants(emailsIntervenants);
+    const intervenants = await getIntervenants(emailsExternals);
 
     expect(intervenants[0].id).toBe(dataResponse.result.ID);
     expect(intervenants[0].email).toBe(emailIntervenant);
@@ -162,13 +172,105 @@ describe("app test", () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  test("send documents to recipients", async () => {
-    // const emailsIntervenants = ["sebastien+391948@edusign.fr"];
-    const response =
-      await sendDocuments(/*[emailStudent, ...emailsIntervenants]*/);
+  test("generate signatories", () => {
+    const signatories = generateSignatories(studentId, [externalId]);
 
-    expect(response.status).toBe(200);
-    expect(response).toHaveProperty("message");
-    expect(response.message).toBe("ok");
+    expect(signatories).toStrictEqual([
+      {
+        type: "student",
+        id: studentId,
+        elements: [
+          {
+            type: "",
+            position: {
+              page: 1,
+              x: 100,
+              y: 200,
+            },
+          },
+        ],
+      },
+      {
+        type: "external",
+        id: externalId,
+        elements: [
+          {
+            type: "",
+            position: {
+              page: 2,
+              x: 10,
+              y: 10,
+            },
+          },
+        ],
+      },
+    ]);
+  });
+
+  test.only("send documents to recipients", async () => {
+    const base64 = "aGVsbG8gd29ybGQ=";
+    const dataResponse: SuccessResponse<{
+      documentsSuccess: number;
+      documents: string[];
+    }> = {
+      status: Status.Success,
+      result: {
+        documentsSuccess: 1,
+        documents: [base64],
+      },
+    };
+
+    mock
+      .onPost("https://ext.edusign.fr/v1/document/v2/send-base64", {
+        user_id: "***REMOVED***",
+        document: {
+          name: "consigne",
+          base64,
+        },
+        signatories: [
+          {
+            type: "student",
+            id: studentId,
+            elements: [
+              {
+                type: "",
+                position: {
+                  page: 1,
+                  x: 100,
+                  y: 200,
+                },
+              },
+            ],
+          },
+          {
+            type: "external",
+            id: externalId,
+            elements: [
+              {
+                type: "",
+                position: {
+                  page: 2,
+                  x: 10,
+                  y: 10,
+                },
+              },
+            ],
+          },
+        ],
+        sendDocumentToRecipients: true,
+        emailReminder: {
+          subject: "",
+          message: "",
+          amount: 0,
+          interval: 0,
+        },
+        directoryId: "",
+      })
+      .reply(200, dataResponse);
+
+    const response = await sendDocuments(studentId, [externalId], base64);
+
+    expect(response.status).toBe(Status.Success);
+    expect(response).toStrictEqual(dataResponse);
   });
 });

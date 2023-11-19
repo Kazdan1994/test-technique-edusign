@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, HostListener, forwardRef } from '@angular/core';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import {
   ControlValueAccessor,
@@ -52,6 +52,17 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   onInput(event: Event): void {
     const files = (event.target as HTMLInputElement).files;
+
+    if (files && files.length > 0) {
+      this.onChange(files[0]);
+    }
+  }
+
+  @HostListener('drop', ['$event'])
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+
+    const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {
       this.onChange(files[0]);

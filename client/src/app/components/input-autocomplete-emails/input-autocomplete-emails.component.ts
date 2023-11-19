@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input-autocomplete-emails',
@@ -18,24 +14,22 @@ import {
   ],
 })
 export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
-  public formControl: FormControl;
+  public emails: string[] = [];
 
-  private onChange: (value: string) => void = () => {
+  public onChange: (value: string[]) => void = () => {
     /**/
   };
   private onTouched: () => void = () => {
     /**/
   };
 
-  constructor() {
-    this.formControl = new FormControl('');
+  writeValue(value: string[]): void {
+    if (value && this.areEmailsValid(value)) {
+      this.emails = value;
+    }
   }
 
-  writeValue(value: () => void): void {
-    this.formControl.setValue(value);
-  }
-
-  registerOnChange(fn: () => void): void {
+  registerOnChange(fn: (value: string[]) => void): void {
     this.onChange = fn;
   }
 
@@ -43,7 +37,9 @@ export class InputAutocompleteEmailsComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  onInput(event: Event): void {
-    this.onChange((event.target as HTMLInputElement).value);
+  private areEmailsValid(emails: string[]): boolean {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    return emails.every((email) => emailRegex.test(email));
   }
 }

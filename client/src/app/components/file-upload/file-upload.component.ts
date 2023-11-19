@@ -20,7 +20,7 @@ import {
 })
 export class FileUploadComponent implements ControlValueAccessor {
   public fileList: NzUploadFile[] = [];
-  private formControl: FormControl;
+  formControl: FormControl;
   public fileDocument: {
     uid: string;
     isUploading: boolean;
@@ -37,7 +37,7 @@ export class FileUploadComponent implements ControlValueAccessor {
     showDownload: false,
   };
 
-  private onChange: (value: NzUploadFile[]) => void = () => {
+  onChange: (value: NzUploadFile[]) => void = () => {
     /**/
   };
   private onTouched: () => void = () => {

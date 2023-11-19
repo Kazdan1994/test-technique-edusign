@@ -81,11 +81,7 @@ describe("app test", () => {
     };
 
     mock
-      .onGet("https://ext.edusign.fr/v1/student/by-email", {
-        params: {
-          email: emailStudent,
-        },
-      })
+      .onGet(`https://ext.edusign.fr/v1/student/by-email/${emailStudent}`)
       .reply(200, dataResponse);
 
     const student = await getStudent(emailStudent);
@@ -103,11 +99,9 @@ describe("app test", () => {
 
     const emailStudentDoesNotExist = faker.internet.email();
     mock
-      .onGet("https://ext.edusign.fr/v1/student/by-email", {
-        params: {
-          email: emailStudentDoesNotExist,
-        },
-      })
+      .onGet(
+        `https://ext.edusign.fr/v1/student/by-email/${emailStudentDoesNotExist}`,
+      )
       .reply(200, errorResponse);
 
     await expect(
@@ -138,11 +132,7 @@ describe("app test", () => {
     };
 
     mock
-      .onGet("https://ext.edusign.fr/v1/externals/by-email", {
-        params: {
-          email: emailIntervenant,
-        },
-      })
+      .onGet(`https://ext.edusign.fr/v1/externals/by-email/${emailIntervenant}`)
       .reply(200, dataResponse);
 
     const intervenants = await getIntervenants(emailsExternals);
@@ -160,11 +150,9 @@ describe("app test", () => {
     const emailExternalDoesNotExist = faker.internet.email();
 
     mock
-      .onGet("https://ext.edusign.fr/v1/externals/by-email", {
-        params: {
-          email: emailExternalDoesNotExist,
-        },
-      })
+      .onGet(
+        `https://ext.edusign.fr/v1/externals/by-email/${emailExternalDoesNotExist}`,
+      )
       .reply(200, errorResponse);
 
     await expect(
@@ -207,7 +195,7 @@ describe("app test", () => {
     ]);
   });
 
-  test.only("send documents to recipients", async () => {
+  test("send documents to recipients", async () => {
     const base64 = "aGVsbG8gd29ybGQ=";
     const dataResponse: SuccessResponse<{
       documentsSuccess: number;

@@ -12,7 +12,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { FileUploadModule } from '../../components/file-upload/file-upload.module';
-import { JsonPipe, KeyValuePipe, NgForOf } from '@angular/common';
+import { NgForOf } from '@angular/common';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { InputAutocompleteEmailsModule } from '../../components/input-autocomplete-emails/input-autocomplete-emails.module';
 
@@ -30,10 +30,8 @@ import { InputAutocompleteEmailsModule } from '../../components/input-autocomple
     NzAutocompleteModule,
     FileUploadModule,
     NgForOf,
-    KeyValuePipe,
     NzSelectModule,
     InputAutocompleteEmailsModule,
-    JsonPipe,
   ],
   declarations: [WelcomeComponent],
   exports: [WelcomeComponent],

@@ -21,33 +21,29 @@ export class WelcomeComponent {
     const { required, email } = Validators;
     this.validateForm = this.fb.group({
       fileDocument: [null, [required]],
-      emailEtudiant: ['student@edusign.fr', [required, email]],
-      emailsIntervenants: [
-        ['intervenant1@edusign.fr', 'intervenant2@edusign.fr'],
-        [required, emailListValidator()],
-      ],
+      emailEtudiant: ['', [required, email]],
+      emailsIntervenants: [[''], [required, emailListValidator()]],
     });
   }
 
-  submitForm(): void {
-    if (this.validateForm.valid) {
-      const formData = new FormData();
+  toBase64 = (file: File) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
-      formData.append('file', this.validateForm.value.fileDocument as File);
-      formData.append(
-        'student',
-        this.validateForm.value.emailEtudiant as string,
-      );
-      formData.append(
-        'external',
-        (this.validateForm.value.emailsIntervenants as string[]).join(','),
-      );
+  async submitForm(): Promise<void> {
+    if (this.validateForm.valid) {
+      const { fileDocument, emailEtudiant, emailsIntervenants } =
+        this.validateForm.value;
 
       this.http
-        .post('http://localhost:8080/sendDocument', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+        .post('http://localhost:8080/sendDocument', {
+          file: await this.toBase64(fileDocument[0]),
+          student: emailEtudiant,
+          external: emailsIntervenants,
         })
         .pipe(
           catchError((error) => {

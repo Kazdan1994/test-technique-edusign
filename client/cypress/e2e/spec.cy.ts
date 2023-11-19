@@ -5,9 +5,16 @@ describe('My First Test', () => {
     cy.visit('/');
   });
 
-  it.only('Visits the initial and submit the form', () => {
+  it('Visits the initial and submit the form', () => {
+    cy.intercept('POST', 'http://localhost:8080/sendDocument', (req) => {
+      req.reply({
+        statusCode: 200,
+        body: { message: 'document is sent' },
+      });
+    }).as('sendDocument');
+
     cy.fixture('file.txt').then((fileContent) => {
-      cy.get('[formControlName="file"]').attachFile(
+      cy.get('[formControlName="fileDocument"]').attachFile(
         {
           fileContent,
           fileName: 'example.txt',

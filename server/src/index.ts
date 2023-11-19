@@ -11,6 +11,7 @@ import type {
 } from "../types";
 import { Status } from "../types";
 import { ExternalData } from "../types/external";
+import { RequestDocument } from "../types/api";
 
 const app: Application = express();
 
@@ -22,6 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+***REMOVED***
+***REMOVED***
+
 /**
  * Get student id
  *
@@ -31,10 +35,7 @@ app.use(express.urlencoded({ extended: true }));
  */
 async function getStudent(email: string): Promise<Person> {
   const response = await axios.get<ApiResponse<StudentData>>(
-    "https://ext.edusign.fr/v1/student/by-email",
-    {
-      params: { email },
-    },
+    `https://ext.edusign.fr/v1/student/by-email/${email}`,
   );
 
   if (response.data.status === Status.Error) {
@@ -47,10 +48,7 @@ async function getStudent(email: string): Promise<Person> {
 async function getIntervenants(emails: string[]): Promise<Person[]> {
   const intervenantsPromises = emails.map(async (email) => {
     const response = await axios.get<ApiResponse<ExternalData>>(
-      "https://ext.edusign.fr/v1/externals/by-email",
-      {
-        params: { email },
-      },
+      `https://ext.edusign.fr/v1/externals/by-email/${email}`,
     );
 
     if (response.data.status === Status.Error) {
@@ -142,14 +140,27 @@ const server = app
   .listen(PORT, "localhost", function () {
     console.log(`Server is running on port ${PORT}.`);
 
-    app.route("/").get((req: Request, res: Response) => {
+    app.get("/", (req: Request, res: Response) => {
       res.json({ homeText: "My super home text" });
     });
 
-    app.route("/sendDocument").post((req: Request, res: Response) => {
-      console.log(req.body);
+    app.post("/sendDocument", async (req: Request, res: Response) => {
+      try {
+        const { file, student, external } = req.body as RequestDocument;
 
-      res.json({ homeText: "My super home text" });
+        const studentId = (await getStudent(student)).id;
+        const externalIds = (await getIntervenants(external)).map((p) => p.id);
+
+        await sendDocuments(studentId, externalIds, file);
+
+        res.json({ message: "Document sent successfully" });
+      } catch (error) {
+        res.json({
+          status: "error",
+          message: (error as Error).message,
+          errorCode: "INTERNAL_ERROR",
+        });
+      }
     });
   })
   .on("error", (err: any) => {

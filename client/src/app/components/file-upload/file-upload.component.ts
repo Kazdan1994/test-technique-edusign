@@ -19,27 +19,53 @@ import {
   ],
 })
 export class FileUploadComponent implements ControlValueAccessor {
-  public formControl: FormControl;
   public fileList: NzUploadFile[] = [];
+  private formControl: FormControl;
+  public fileDocument: {
+    uid: string;
+    isUploading: boolean;
+    message: string;
+    isImageUrl: boolean;
+    iconType: string;
+    showDownload: boolean;
+  } = {
+    uid: '',
+    isUploading: false,
+    message: '',
+    isImageUrl: false,
+    iconType: '',
+    showDownload: false,
+  };
 
-  private onChange: (value: File) => void = () => {
+  private onChange: (value: NzUploadFile[]) => void = () => {
     /**/
   };
   private onTouched: () => void = () => {
     /**/
   };
 
-  constructor(/* private readonly http: HttpClient, private readonly msg: NzMessageService */) {
+  constructor() {
     this.formControl = new FormControl('');
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList = [file];
+    this.fileDocument = {
+      uid: file.uid,
+      isUploading: file['isUploading'],
+      message: file['message'],
+      isImageUrl: file['isImageUrl'],
+      iconType: file['iconType'],
+      showDownload: file['showDownload'],
+    };
+
+    this.formControl.setValue(this.fileDocument);
+
     return false;
   };
 
-  writeValue(value: () => void): void {
-    this.formControl.setValue(value);
+  writeValue(value: NzUploadFile[]): void {
+    this.onChange(value);
   }
 
   registerOnChange(fn: () => void): void {
@@ -54,7 +80,7 @@ export class FileUploadComponent implements ControlValueAccessor {
     const files = (event.target as HTMLInputElement).files;
 
     if (files && files.length > 0) {
-      this.onChange(files[0]);
+      this.onChange(files as unknown as NzUploadFile[]);
     }
   }
 
@@ -65,7 +91,7 @@ export class FileUploadComponent implements ControlValueAccessor {
     const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {
-      this.onChange(files[0]);
+      this.onChange(files as unknown as NzUploadFile[]);
     }
   }
 }

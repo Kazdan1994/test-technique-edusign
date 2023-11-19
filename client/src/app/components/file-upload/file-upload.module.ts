@@ -4,6 +4,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     FormsModule,
     NzInputModule,
     ReactiveFormsModule,
+    NzSelectModule,
   ],
   declarations: [FileUploadComponent],
   exports: [FileUploadComponent],

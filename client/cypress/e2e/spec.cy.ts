@@ -5,7 +5,7 @@ describe('My First Test', () => {
     cy.visit('/');
   });
 
-  it('Visits the initial and submit the form', () => {
+  it.only('Visits the initial and submit the form', () => {
     cy.fixture('file.txt').then((fileContent) => {
       cy.get('[formControlName="file"]').attachFile(
         {

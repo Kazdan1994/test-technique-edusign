@@ -1,9 +1,3 @@
-<ul>
-  <li *ngFor="let control of validateForm.controls | keyvalue">
-    {{ control.key }}: {{ control.value.value }}
-  </li>
-</ul>
-
 <form
   nz-form
   [nzLayout]="'vertical'"
@@ -13,7 +7,7 @@
 >
   <nz-form-item>
     <nz-form-control [nzSpan]="14" nzErrorTip="Merci d'uploader un fichier">
-      <app-file-upload formControlName="file"></app-file-upload>
+      <app-file-upload formControlName="fileDocument" />
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>

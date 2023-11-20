@@ -1,30 +1,19 @@
-import type { Application, Request, Response } from "express";
-import express from "express";
-import cors, { type CorsOptions } from "cors";
+"use strict";
+
+import { Response, Request } from "express";
 import axios from "axios";
-import "dotenv/config";
 import type {
   ApiResponse,
   DocumentData,
   ErrorResponse,
   Person,
   StudentData,
-} from "../types";
-import { Status } from "../types";
-import { ExternalData } from "../types/external";
-import { RequestDocument } from "../types/api";
+  ExternalData,
+  RequestDocument,
+} from "../../types";
+import { Status } from "../../types";
 
-const app: Application = express();
-
-const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
-
-const corsOptions: CorsOptions = {};
-
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-***REMOVED*** `Bearer ${process.env.TOKEN}`;
+axios.defaults.headers.common["Authorization"] = `Bearer ${process.env.TOKEN}`;
 
 /**
  * Get student id
@@ -136,45 +125,29 @@ async function sendDocuments(
   };
 }
 
-const server = app
-  .listen(PORT, "localhost", function () {
-    console.log(`Server is running on port ${PORT}.`);
+async function send(req: Request, res: Response) {
+  try {
+    const { file, student, external } = req.body as RequestDocument;
 
-    app.get("/", (req: Request, res: Response) => {
-      res.json({ homeText: "My super home text" });
+    const studentId = (await getStudent(student)).id;
+    const externalIds = (await getIntervenants(external)).map((p) => p.id);
+
+    await sendDocuments(studentId, externalIds, file);
+
+    res.json({ message: "Document sent successfully" });
+  } catch (error) {
+    res.status(400).json({
+      status: "error",
+      message: (error as Error).message,
+      errorCode: "INTERNAL_ERROR",
     });
-
-    app.post("/sendDocument", async (req: Request, res: Response) => {
-      try {
-        const { file, student, external } = req.body as RequestDocument;
-
-        const studentId = (await getStudent(student)).id;
-        const externalIds = (await getIntervenants(external)).map((p) => p.id);
-
-        await sendDocuments(studentId, externalIds, file);
-
-        res.json({ message: "Document sent successfully" });
-      } catch (error) {
-        res.status(400).json({
-          status: "error",
-          message: (error as Error).message,
-          errorCode: "INTERNAL_ERROR",
-        });
-      }
-    });
-  })
-  .on("error", (err: any) => {
-    if (err.code === "EADDRINUSE") {
-      console.log("Error: address already in use");
-    } else {
-      console.log(err);
-    }
-  });
+  }
+}
 
 export {
-  server,
   getStudent,
   getIntervenants,
-  sendDocuments,
   generateSignatories,
+  sendDocuments,
+  send,
 };

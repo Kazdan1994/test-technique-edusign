@@ -1,22 +1,23 @@
+// @ts-ignore
 import request from "supertest";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import server from "../src/server";
 import {
   generateSignatories,
   getIntervenants,
   getStudent,
   sendDocuments,
-  server,
-} from "..";
-import {
+} from "../src/controllers/document";
+import type {
   ApiResponse,
   ErrorResponse,
-  Status,
+  ExternalData,
   StudentData,
   SuccessResponse,
-} from "../../types";
-import { ExternalData } from "../../types/external";
+} from "../types";
+import { Status } from "../types";
 
 const mock = new MockAdapter(axios);
 
@@ -36,12 +37,12 @@ describe("app test", () => {
     server.close();
   });
 
-  test("home route", async () => {
-    const res = await request(server).get("/");
+  test("health route", async () => {
+    const res = await request(server).get("/api/health");
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("homeText");
-    expect(res.body.homeText).toBe("My super home text");
+    expect(res.body).toHaveProperty("status");
+    expect(res.body.status).toBe("OK");
   });
 
   test("get student email", async () => {

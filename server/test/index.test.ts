@@ -211,7 +211,7 @@ describe("app test", () => {
 
     mock
       .onPost("https://ext.edusign.fr/v1/document/v2/send-base64", {
-        user_id: "***REMOVED***",
+        user_id: process.env.USER_ID,
         document: {
           name: "consigne",
           base64,

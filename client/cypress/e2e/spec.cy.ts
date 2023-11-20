@@ -25,13 +25,13 @@ describe('My First Test', () => {
       );
     });
 
-    cy.get('[formcontrolname="emailEtudiant"]').type('student@edusign.fr');
+    cy.get('[formcontrolname="emailStudent"]').type('student@edusign.fr');
 
-    cy.get('[formcontrolname="emailsIntervenants"]').click();
-    cy.get('[formcontrolname="emailsIntervenants"]').type(
+    cy.get('[formcontrolname="emailsExternals"]').click();
+    cy.get('[formcontrolname="emailsExternals"]').type(
       'intervenant1@edusign.fr{enter}',
     );
-    cy.get('[formcontrolname="emailsIntervenants"]').type(
+    cy.get('[formcontrolname="emailsExternals"]').type(
       'intervenant2@edusign.fr{enter}',
     );
 

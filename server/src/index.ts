@@ -2,6 +2,7 @@ import type { Application, Request, Response } from "express";
 import express from "express";
 import cors, { type CorsOptions } from "cors";
 import axios from "axios";
+import "dotenv/config";
 import type {
   ApiResponse,
   DocumentData,
@@ -23,8 +24,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-***REMOVED***
-***REMOVED***
+***REMOVED*** `Bearer ${process.env.TOKEN}`;
 
 /**
  * Get student id
@@ -155,7 +155,7 @@ const server = app
 
         res.json({ message: "Document sent successfully" });
       } catch (error) {
-        res.json({
+        res.status(400).json({
           status: "error",
           message: (error as Error).message,
           errorCode: "INTERNAL_ERROR",

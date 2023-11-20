@@ -4,6 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { emailListValidator } from '../../../validators/email-list.validator';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-welcome',
@@ -21,8 +22,8 @@ export class WelcomeComponent {
     const { required, email } = Validators;
     this.validateForm = this.fb.group({
       fileDocument: [null, [required]],
-      emailEtudiant: ['', [required, email]],
-      emailsIntervenants: [[''], [required, emailListValidator()]],
+      emailStudent: ['', [required, email]],
+      emailsExternals: [[''], [required, emailListValidator()]],
     });
   }
 
@@ -36,25 +37,23 @@ export class WelcomeComponent {
 
   async submitForm(): Promise<void> {
     if (this.validateForm.valid) {
-      const { fileDocument, emailEtudiant, emailsIntervenants } =
+      const { fileDocument, emailStudent, emailsExternals } =
         this.validateForm.value;
 
       this.http
-        .post('http://localhost:8080/sendDocument', {
+        .post(`${environment.apiUrl}/sendDocument`, {
           file: await this.toBase64(fileDocument[0]),
-          student: emailEtudiant,
-          external: emailsIntervenants,
+          student: emailStudent,
+          external: emailsExternals,
         })
         .pipe(
-          catchError((error) => {
-            console.error('Error in post request', error);
+          catchError(({ error }) => {
+            this.notification.create('error', error.errorCode, error.message);
 
             return throwError(error);
           }),
         )
-        .subscribe((response) => {
-          console.log('Post request successful', response);
-
+        .subscribe(() => {
           this.notification.create(
             'success',
             'Envoyé!',

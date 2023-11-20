@@ -8,4 +8,5 @@ module.exports = {
     "!<rootDir>/types/",
   ],
   testEnvironment: "node",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"]
 };
